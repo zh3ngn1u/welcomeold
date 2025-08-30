@@ -1,1 +1,62 @@
-Zh3ngN1u Di sini
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zh3ngN1u Pentester Portfolio</title>
+<link rel="stylesheet" href="assets/css/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<header>
+    <nav>
+        <h1>Developers</h1>
+        <ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="pages.html">Shell List</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+</header>
+
+<section id="hero">
+    <div class="terminal">
+        <p class="typing">Zh3ngN1u Here</p>
+    </div>
+    <a href="pages.html" class="btn">Shell List</a>
+</section>
+
+<section id="about">
+    <div class="container">
+        <h2>About Me</h2>
+        <p>I'm a security enthusiast and pentester. I explore vulnerabilities, develop exploits, and write scripts to make systems more secure.</p>
+    </div>
+</section>
+
+<section id="contact">
+    <div class="container">
+        <h2>Contact Me</h2>
+        <p>Email: zh3ngn1u@proton.me</p>
+        <p>GitHub: <a href="https://github.com/zh3ngn1u" target="_blank">github.com/zh3ngn1u</a></p>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2025 Zh3ngN1u | All rights reserved</p>
+</footer>
+
+<script>
+const text = " Hello There";
+let i = 0;
+const speed = 50;
+function typeWriter() {
+    if(i < text.length){
+        document.querySelector(".typing").innerHTML += text.charAt(i);
+        i++;
+        setTimeout(typeWriter, speed);
+    }
+}
+typeWriter();
+</script>
+</body>
+</html>
