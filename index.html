@@ -1,62 +1,782 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zh3ngN1u Pentester Portfolio</title>
-<link rel="stylesheet" href="assets/css/style.css">
-<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Developer Portfolio</title>
+    <meta name="description" content="Portfolio dan profil developer.">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                Roboto, Helvetica, Arial, sans-serif;
+            background: #07070a;
+            color: #f5f5f7;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* =========================
+           BACKGROUND
+        ========================= */
+
+        .background {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            overflow: hidden;
+            background:
+                radial-gradient(
+                    circle at 15% 20%,
+                    rgba(120, 90, 255, 0.16),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 85% 15%,
+                    rgba(0, 200, 255, 0.10),
+                    transparent 30%
+                ),
+                #07070a;
+        }
+
+        .grid {
+            position: absolute;
+            inset: 0;
+            opacity: .18;
+            background-image:
+                linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: linear-gradient(to bottom, black, transparent);
+        }
+
+        .glow {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: .12;
+        }
+
+        .glow.one {
+            background: #7c5cff;
+            top: -200px;
+            left: -200px;
+        }
+
+        .glow.two {
+            background: #00c8ff;
+            right: -200px;
+            top: 30%;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        nav {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(1100px, calc(100% - 32px));
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            background: rgba(15, 15, 20, .72);
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 18px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: #8b72ff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            padding: 8px 13px;
+            border-radius: 10px;
+            color: #aaaab3;
+            font-size: 14px;
+            transition: .25s ease;
+        }
+
+        .nav-links a:hover {
+            color: white;
+            background: rgba(255,255,255,.06);
+        }
+
+        /* =========================
+           HERO
+        ========================= */
+
+        .hero {
+            min-height: 100vh;
+            max-width: 1100px;
+            margin: auto;
+            padding: 150px 24px 80px;
+
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 7px 12px;
+            margin-bottom: 24px;
+
+            border: 1px solid rgba(139,114,255,.25);
+            border-radius: 999px;
+
+            background: rgba(139,114,255,.08);
+            color: #b8aaff;
+
+            font-size: 13px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            background: #62e6a7;
+            border-radius: 50%;
+            box-shadow: 0 0 12px #62e6a7;
+        }
+
+        h1 {
+            font-size: clamp(48px, 8vw, 92px);
+            line-height: .98;
+            letter-spacing: -4px;
+            margin-bottom: 25px;
+        }
+
+        h1 .gradient {
+            background: linear-gradient(
+                110deg,
+                #ffffff,
+                #a99aff 45%,
+                #68dfff
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero-description {
+            max-width: 650px;
+            color: #96969f;
+            font-size: 18px;
+            line-height: 1.8;
+            margin-bottom: 32px;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+            padding: 13px 20px;
+            border-radius: 12px;
+
+            font-size: 14px;
+            font-weight: 600;
+
+            transition: .25s ease;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #08080a;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(255,255,255,.12);
+        }
+
+        .btn-secondary {
+            border: 1px solid rgba(255,255,255,.1);
+            background: rgba(255,255,255,.04);
+            color: #dddde2;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,.08);
+            transform: translateY(-2px);
+        }
+
+        /* =========================
+           SECTIONS
+        ========================= */
+
+        section {
+            max-width: 1100px;
+            margin: auto;
+            padding: 100px 24px;
+        }
+
+        .section-label {
+            color: #8b72ff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            font-size: clamp(30px, 5vw, 48px);
+            letter-spacing: -1.5px;
+            margin-bottom: 15px;
+        }
+
+        .section-description {
+            color: #8f8f98;
+            max-width: 650px;
+            margin-bottom: 45px;
+        }
+
+        /* =========================
+           ABOUT
+        ========================= */
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1.1fr .9fr;
+            gap: 25px;
+        }
+
+        .card {
+            padding: 28px;
+            border-radius: 20px;
+
+            border: 1px solid rgba(255,255,255,.07);
+            background: rgba(255,255,255,.025);
+
+            transition: .3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(139,114,255,.25);
+            transform: translateY(-4px);
+        }
+
+        .card h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            color: #92929a;
+            font-size: 15px;
+        }
+
+        /* =========================
+           SKILLS
+        ========================= */
+
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .skill {
+            padding: 9px 14px;
+            border-radius: 10px;
+
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.07);
+
+            color: #c9c9cf;
+            font-size: 13px;
+        }
+
+        /* =========================
+           PROJECTS
+        ========================= */
+
+        .projects {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .project {
+            min-height: 230px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .project-icon {
+            width: 48px;
+            height: 48px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 14px;
+
+            background: linear-gradient(
+                135deg,
+                rgba(139,114,255,.18),
+                rgba(75,210,255,.08)
+            );
+
+            border: 1px solid rgba(139,114,255,.15);
+
+            font-size: 21px;
+        }
+
+        .project h3 {
+            margin-top: 20px;
+            margin-bottom: 8px;
+        }
+
+        .project p {
+            font-size: 14px;
+        }
+
+        .project-link {
+            margin-top: 25px;
+            color: #a99aff;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* =========================
+           CONTACT
+        ========================= */
+
+        .contact-box {
+            position: relative;
+            overflow: hidden;
+
+            padding: 55px 40px;
+            border-radius: 25px;
+
+            text-align: center;
+
+            border: 1px solid rgba(139,114,255,.16);
+
+            background:
+                radial-gradient(
+                    circle at 50% 0%,
+                    rgba(139,114,255,.12),
+                    transparent 55%
+                ),
+                rgba(255,255,255,.025);
+        }
+
+        .contact-box h2 {
+            font-size: clamp(30px, 5vw, 50px);
+            margin-bottom: 15px;
+            letter-spacing: -1.5px;
+        }
+
+        .contact-box p {
+            max-width: 550px;
+            margin: 0 auto 28px;
+            color: #92929a;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            max-width: 1100px;
+            margin: auto;
+            padding: 30px 24px 45px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            border-top: 1px solid rgba(255,255,255,.06);
+
+            color: #6e6e76;
+            font-size: 13px;
+        }
+
+        .socials {
+            display: flex;
+            gap: 16px;
+        }
+
+        .socials a {
+            transition: .2s ease;
+        }
+
+        .socials a:hover {
+            color: white;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 800px) {
+
+            .nav-links {
+                display: none;
+            }
+
+            nav {
+                padding: 12px 15px;
+            }
+
+            .hero {
+                padding-top: 130px;
+            }
+
+            h1 {
+                letter-spacing: -2.5px;
+            }
+
+            .hero-description {
+                font-size: 16px;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .projects {
+                grid-template-columns: 1fr;
+            }
+
+            section {
+                padding: 75px 20px;
+            }
+
+            footer {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+
+        /* =========================
+           ANIMATION
+        ========================= */
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-content > * {
+            animation: fadeUp .8s ease both;
+        }
+
+        .hero-content .badge {
+            animation-delay: .05s;
+        }
+
+        .hero-content h1 {
+            animation-delay: .15s;
+        }
+
+        .hero-content .hero-description {
+            animation-delay: .25s;
+        }
+
+        .hero-content .buttons {
+            animation-delay: .35s;
+        }
+    </style>
 </head>
+
 <body>
-<header>
+
+    <!-- Background -->
+    <div class="background">
+        <div class="grid"></div>
+        <div class="glow one"></div>
+        <div class="glow two"></div>
+    </div>
+
+    <!-- Navigation -->
     <nav>
-        <h1>Developers</h1>
-        <ul>
+        <a href="#" class="logo">
+            AdvanceStudio<span>.</span>
+        </a>
+
+        <ul class="nav-links">
             <li><a href="#about">About</a></li>
-            <li><a href="pages.html">Shell List</a></li>
+            <li><a href="#projects">Projects</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
     </nav>
-</header>
 
-<section id="hero">
-    <div class="terminal">
-        <p class="typing">Zh3ngN1u Here</p>
-    </div>
-    <a href="pages.html" class="btn">Shell List</a>
-</section>
+    <!-- Hero -->
+    <main>
 
-<section id="about">
-    <div class="container">
-        <h2>About Me</h2>
-        <p>I'm a security enthusiast and pentester. I explore vulnerabilities, develop exploits, and write scripts to make systems more secure.</p>
-    </div>
-</section>
+        <section class="hero">
 
-<section id="contact">
-    <div class="container">
-        <h2>Contact Me</h2>
-        <p>Email: zh3ngn1u@proton.me</p>
-        <p>GitHub: <a href="https://github.com/zh3ngn1u" target="_blank">github.com/zh3ngn1u</a></p>
-    </div>
-</section>
+            <div class="hero-content">
 
-<footer>
-    <p>&copy; 2025 Zh3ngN1u | All rights reserved</p>
-</footer>
+                <div class="badge">
+                    <span class="status-dot"></span>
+                    Available for projects
+                </div>
 
-<script>
-const text = " Hello There";
-let i = 0;
-const speed = 50;
-function typeWriter() {
-    if(i < text.length){
-        document.querySelector(".typing").innerHTML += text.charAt(i);
-        i++;
-        setTimeout(typeWriter, speed);
-    }
-}
-typeWriter();
-</script>
+                <h1>
+                    Building digital
+                    <span class="gradient">experiences.</span>
+                </h1>
+
+                <p class="hero-description">
+                    Saya seorang developer yang berfokus pada pembuatan
+                    website, game, dan berbagai pengalaman digital yang
+                    modern, interaktif, dan mudah digunakan.
+                </p>
+
+                <div class="buttons">
+                    <a href="#projects" class="btn btn-primary">
+                        Lihat Project →
+                    </a>
+
+                    <a href="#contact" class="btn btn-secondary">
+                        Hubungi Saya
+                    </a>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- About -->
+        <section id="about">
+
+            <div class="section-label">
+                About Me
+            </div>
+
+            <h2 class="section-title">
+                Developer yang suka membuat sesuatu.
+            </h2>
+
+            <p class="section-description">
+                Saya menikmati proses mengubah ide menjadi produk digital
+                yang dapat digunakan dan dinikmati oleh orang lain.
+            </p>
+
+            <div class="about-grid">
+
+                <div class="card">
+                    <h3>Siapa Saya?</h3>
+
+                    <p>
+                        Saya adalah developer independen yang mengembangkan
+                        berbagai project digital, mulai dari website,
+                        game, sistem backend, hingga berbagai tools
+                        custom sesuai kebutuhan project.
+                    </p>
+                </div>
+
+                <div class="card">
+
+                    <h3>Tech Stack</h3>
+
+                    <div class="skills">
+                        <span class="skill">HTML</span>
+                        <span class="skill">CSS</span>
+                        <span class="skill">JavaScript</span>
+                        <span class="skill">Lua / Luau</span>
+                        <span class="skill">Roblox Studio</span>
+                        <span class="skill">Cloudflare</span>
+                        <span class="skill">Git</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Projects -->
+        <section id="projects">
+
+            <div class="section-label">
+                Projects
+            </div>
+
+            <h2 class="section-title">
+                Beberapa karya saya.
+            </h2>
+
+            <p class="section-description">
+                Berikut beberapa kategori project yang pernah saya
+                kerjakan dan kembangkan.
+            </p>
+
+            <div class="projects">
+
+                <div class="card project">
+
+                    <div>
+                        <div class="project-icon">🎮</div>
+
+                        <h3>Game Development</h3>
+
+                        <p>
+                            Mengembangkan game dan sistem interaktif
+                            menggunakan Roblox Studio dan Luau.
+                        </p>
+                    </div>
+
+                    <a href="#" class="project-link">
+                        Explore Project →
+                    </a>
+
+                </div>
+
+                <div class="card project">
+
+                    <div>
+                        <div class="project-icon">🌐</div>
+
+                        <h3>Web Development</h3>
+
+                        <p>
+                            Website modern, landing page, portfolio,
+                            dan berbagai kebutuhan web custom.
+                        </p>
+                    </div>
+
+                    <a href="#" class="project-link">
+                        Explore Project →
+                    </a>
+
+                </div>
+
+                <div class="card project">
+
+                    <div>
+                        <div class="project-icon">⚡</div>
+
+                        <h3>Custom Systems</h3>
+
+                        <p>
+                            Sistem dan tools custom untuk mengotomatisasi
+                            pekerjaan dan meningkatkan workflow project.
+                        </p>
+                    </div>
+
+                    <a href="#" class="project-link">
+                        Explore Project →
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Contact -->
+        <section id="contact">
+
+            <div class="contact-box">
+
+                <h2>
+                    Punya sebuah ide?
+                </h2>
+
+                <p>
+                    Mari buat sesuatu yang menarik bersama.
+                    Untuk project, kolaborasi, atau sekadar berdiskusi,
+                    jangan ragu untuk menghubungi saya.
+                </p>
+
+                <div class="buttons" style="justify-content:center;">
+
+                    <a
+                        href="mailto:your@email.com"
+                        class="btn btn-primary"
+                    >
+                        Contact Me
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+
+        <div>
+            © 2026 AdvanceStudio. All rights reserved.
+        </div>
+
+        <div class="socials">
+            <a href="#" target="_blank">GitHub</a>
+            <a href="#" target="_blank">Discord</a>
+            <a href="#" target="_blank">Roblox</a>
+        </div>
+
+    </footer>
+
 </body>
 </html>
