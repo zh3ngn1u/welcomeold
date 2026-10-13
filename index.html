@@ -1,782 +1,317 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Developer Portfolio</title>
-    <meta name="description" content="Portfolio dan profil developer.">
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
-                Roboto, Helvetica, Arial, sans-serif;
-            background: #07070a;
-            color: #f5f5f7;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
-
-        /* =========================
-           BACKGROUND
-        ========================= */
-
-        .background {
-            position: fixed;
-            inset: 0;
-            z-index: -2;
-            overflow: hidden;
-            background:
-                radial-gradient(
-                    circle at 15% 20%,
-                    rgba(120, 90, 255, 0.16),
-                    transparent 30%
-                ),
-                radial-gradient(
-                    circle at 85% 15%,
-                    rgba(0, 200, 255, 0.10),
-                    transparent 30%
-                ),
-                #07070a;
-        }
-
-        .grid {
-            position: absolute;
-            inset: 0;
-            opacity: .18;
-            background-image:
-                linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
-            background-size: 60px 60px;
-            mask-image: linear-gradient(to bottom, black, transparent);
-        }
-
-        .glow {
-            position: absolute;
-            width: 500px;
-            height: 500px;
-            border-radius: 50%;
-            filter: blur(100px);
-            opacity: .12;
-        }
-
-        .glow.one {
-            background: #7c5cff;
-            top: -200px;
-            left: -200px;
-        }
-
-        .glow.two {
-            background: #00c8ff;
-            right: -200px;
-            top: 30%;
-        }
-
-        /* =========================
-           NAVBAR
-        ========================= */
-
-        nav {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: min(1100px, calc(100% - 32px));
-            padding: 12px 18px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            background: rgba(15, 15, 20, .72);
-            border: 1px solid rgba(255,255,255,.08);
-            border-radius: 18px;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-
-            z-index: 100;
-        }
-
-        .logo {
-            font-size: 18px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-        }
-
-        .logo span {
-            color: #8b72ff;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 8px;
-            list-style: none;
-        }
-
-        .nav-links a {
-            padding: 8px 13px;
-            border-radius: 10px;
-            color: #aaaab3;
-            font-size: 14px;
-            transition: .25s ease;
-        }
-
-        .nav-links a:hover {
-            color: white;
-            background: rgba(255,255,255,.06);
-        }
-
-        /* =========================
-           HERO
-        ========================= */
-
-        .hero {
-            min-height: 100vh;
-            max-width: 1100px;
-            margin: auto;
-            padding: 150px 24px 80px;
-
-            display: flex;
-            align-items: center;
-        }
-
-        .hero-content {
-            max-width: 800px;
-        }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-
-            padding: 7px 12px;
-            margin-bottom: 24px;
-
-            border: 1px solid rgba(139,114,255,.25);
-            border-radius: 999px;
-
-            background: rgba(139,114,255,.08);
-            color: #b8aaff;
-
-            font-size: 13px;
-        }
-
-        .status-dot {
-            width: 7px;
-            height: 7px;
-            background: #62e6a7;
-            border-radius: 50%;
-            box-shadow: 0 0 12px #62e6a7;
-        }
-
-        h1 {
-            font-size: clamp(48px, 8vw, 92px);
-            line-height: .98;
-            letter-spacing: -4px;
-            margin-bottom: 25px;
-        }
-
-        h1 .gradient {
-            background: linear-gradient(
-                110deg,
-                #ffffff,
-                #a99aff 45%,
-                #68dfff
-            );
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .hero-description {
-            max-width: 650px;
-            color: #96969f;
-            font-size: 18px;
-            line-height: 1.8;
-            margin-bottom: 32px;
-        }
-
-        .buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-
-            padding: 13px 20px;
-            border-radius: 12px;
-
-            font-size: 14px;
-            font-weight: 600;
-
-            transition: .25s ease;
-        }
-
-        .btn-primary {
-            background: white;
-            color: #08080a;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 35px rgba(255,255,255,.12);
-        }
-
-        .btn-secondary {
-            border: 1px solid rgba(255,255,255,.1);
-            background: rgba(255,255,255,.04);
-            color: #dddde2;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255,255,255,.08);
-            transform: translateY(-2px);
-        }
-
-        /* =========================
-           SECTIONS
-        ========================= */
-
-        section {
-            max-width: 1100px;
-            margin: auto;
-            padding: 100px 24px;
-        }
-
-        .section-label {
-            color: #8b72ff;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 12px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .section-title {
-            font-size: clamp(30px, 5vw, 48px);
-            letter-spacing: -1.5px;
-            margin-bottom: 15px;
-        }
-
-        .section-description {
-            color: #8f8f98;
-            max-width: 650px;
-            margin-bottom: 45px;
-        }
-
-        /* =========================
-           ABOUT
-        ========================= */
-
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1.1fr .9fr;
-            gap: 25px;
-        }
-
-        .card {
-            padding: 28px;
-            border-radius: 20px;
-
-            border: 1px solid rgba(255,255,255,.07);
-            background: rgba(255,255,255,.025);
-
-            transition: .3s ease;
-        }
-
-        .card:hover {
-            border-color: rgba(139,114,255,.25);
-            transform: translateY(-4px);
-        }
-
-        .card h3 {
-            font-size: 20px;
-            margin-bottom: 12px;
-        }
-
-        .card p {
-            color: #92929a;
-            font-size: 15px;
-        }
-
-        /* =========================
-           SKILLS
-        ========================= */
-
-        .skills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .skill {
-            padding: 9px 14px;
-            border-radius: 10px;
-
-            background: rgba(255,255,255,.04);
-            border: 1px solid rgba(255,255,255,.07);
-
-            color: #c9c9cf;
-            font-size: 13px;
-        }
-
-        /* =========================
-           PROJECTS
-        ========================= */
-
-        .projects {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
-        }
-
-        .project {
-            min-height: 230px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .project-icon {
-            width: 48px;
-            height: 48px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 14px;
-
-            background: linear-gradient(
-                135deg,
-                rgba(139,114,255,.18),
-                rgba(75,210,255,.08)
-            );
-
-            border: 1px solid rgba(139,114,255,.15);
-
-            font-size: 21px;
-        }
-
-        .project h3 {
-            margin-top: 20px;
-            margin-bottom: 8px;
-        }
-
-        .project p {
-            font-size: 14px;
-        }
-
-        .project-link {
-            margin-top: 25px;
-            color: #a99aff;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        /* =========================
-           CONTACT
-        ========================= */
-
-        .contact-box {
-            position: relative;
-            overflow: hidden;
-
-            padding: 55px 40px;
-            border-radius: 25px;
-
-            text-align: center;
-
-            border: 1px solid rgba(139,114,255,.16);
-
-            background:
-                radial-gradient(
-                    circle at 50% 0%,
-                    rgba(139,114,255,.12),
-                    transparent 55%
-                ),
-                rgba(255,255,255,.025);
-        }
-
-        .contact-box h2 {
-            font-size: clamp(30px, 5vw, 50px);
-            margin-bottom: 15px;
-            letter-spacing: -1.5px;
-        }
-
-        .contact-box p {
-            max-width: 550px;
-            margin: 0 auto 28px;
-            color: #92929a;
-        }
-
-        /* =========================
-           FOOTER
-        ========================= */
-
-        footer {
-            max-width: 1100px;
-            margin: auto;
-            padding: 30px 24px 45px;
-
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            border-top: 1px solid rgba(255,255,255,.06);
-
-            color: #6e6e76;
-            font-size: 13px;
-        }
-
-        .socials {
-            display: flex;
-            gap: 16px;
-        }
-
-        .socials a {
-            transition: .2s ease;
-        }
-
-        .socials a:hover {
-            color: white;
-        }
-
-        /* =========================
-           MOBILE
-        ========================= */
-
-        @media (max-width: 800px) {
-
-            .nav-links {
-                display: none;
-            }
-
-            nav {
-                padding: 12px 15px;
-            }
-
-            .hero {
-                padding-top: 130px;
-            }
-
-            h1 {
-                letter-spacing: -2.5px;
-            }
-
-            .hero-description {
-                font-size: 16px;
-            }
-
-            .about-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .projects {
-                grid-template-columns: 1fr;
-            }
-
-            section {
-                padding: 75px 20px;
-            }
-
-            footer {
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
-            }
-        }
-
-        /* =========================
-           ANIMATION
-        ========================= */
-
-        @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .hero-content > * {
-            animation: fadeUp .8s ease both;
-        }
-
-        .hero-content .badge {
-            animation-delay: .05s;
-        }
-
-        .hero-content h1 {
-            animation-delay: .15s;
-        }
-
-        .hero-content .hero-description {
-            animation-delay: .25s;
-        }
-
-        .hero-content .buttons {
-            animation-delay: .35s;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KeyLicense — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
 </head>
-
 <body>
 
-    <!-- Background -->
-    <div class="background">
-        <div class="grid"></div>
-        <div class="glow one"></div>
-        <div class="glow two"></div>
-    </div>
+<!-- ================= LOGIN ================= -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-glow g1"></div>
+  <div class="login-glow g2"></div>
+  <div class="login-card">
+    <div class="logo-lg">🔐 Key<span>License</span></div>
+    <p class="subtitle">Masuk ke panel manajemen lisensi</p>
+    <form id="loginForm" autocomplete="off">
+      <label class="field-label">Username</label>
+      <input type="text" id="username" placeholder="admin" required />
+      <label class="field-label">Password</label>
+      <input type="password" id="password" placeholder="••••••••" required />
+      <button type="submit" class="btn btn-primary btn-block" id="loginBtn">Masuk</button>
+      <p id="loginError" class="error-text hidden"></p>
+    </form>
+    <div class="login-divider"><span>atau</span></div>
+    <button class="btn btn-ghost btn-block" id="btnDemo">👀 Lihat Demo (tanpa server)</button>
+  </div>
+</div>
 
-    <!-- Navigation -->
-    <nav>
-        <a href="#" class="logo">
-            AdvanceStudio<span>.</span>
-        </a>
+<!-- ================= APP ================= -->
+<div id="app" class="app hidden">
 
-        <ul class="nav-links">
-            <li><a href="#about">About</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="side-logo">Key<span>License</span></div>
+    <nav class="side-nav">
+      <button class="nav-item active" data-page="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        Dashboard
+      </button>
+      <button class="nav-item" data-page="keys">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3-3.5 3.5z"/></svg>
+        Key Lisensi
+      </button>
+      <button class="nav-item" data-page="generate">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Generate Key
+      </button>
+      <button class="nav-item" data-page="logs">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Log Aktivitas
+      </button>
+      <button class="nav-item" data-page="api">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        API &amp; Integrasi
+      </button>
     </nav>
+    <div class="side-footer">
+      <div class="admin-chip">
+        <div class="avatar" id="adminAvatar">A</div>
+        <div><div class="admin-name" id="adminName">admin</div><div class="admin-role">Administrator</div></div>
+      </div>
+      <button class="btn btn-ghost btn-xs btn-block" id="btnLogout">Keluar</button>
+    </div>
+  </aside>
+  <div class="side-backdrop" id="sideBackdrop"></div>
 
-    <!-- Hero -->
-    <main>
+  <!-- Main -->
+  <div class="main">
+    <header class="topbar">
+      <button class="hamburger" id="btnSidebar">☰</button>
+      <h1 class="page-title" id="pageTitle">Dashboard</h1>
+      <div class="topbar-right">
+        <span class="badge badge-active" id="serverStatus">● …</span>
+      </div>
+    </header>
 
-        <section class="hero">
+    <main class="content">
 
-            <div class="hero-content">
+      <!-- ===== PAGE: DASHBOARD ===== -->
+      <section id="page-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon si-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3-3.5 3.5z"/></svg></div>
+            <div><div class="stat-value" id="stTotal">–</div><div class="stat-label">Total Key</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon si-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+            <div><div class="stat-value ok" id="stActive">–</div><div class="stat-label">Aktif</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon si-warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+            <div><div class="stat-value warn" id="stExpired">–</div><div class="stat-label">Kedaluwarsa</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon si-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
+            <div><div class="stat-value bad" id="stBanned">–</div><div class="stat-label">Banned</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon si-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+            <div><div class="stat-value" id="stChecks">–</div><div class="stat-label">Validasi 24 Jam</div></div>
+          </div>
+        </div>
 
-                <div class="badge">
-                    <span class="status-dot"></span>
-                    Available for projects
+        <div class="grid-2">
+          <div class="panel">
+            <h3>📈 Validasi 7 Hari Terakhir</h3>
+            <div class="chart" id="chart"></div>
+          </div>
+          <div class="panel">
+            <h3>🎯 Distribusi Key</h3>
+            <div class="donut-wrap">
+              <div class="donut" id="donut">
+                <div class="donut-hole">
+                  <div class="donut-total" id="donutTotal">0</div>
+                  <div class="donut-label">Total Key</div>
                 </div>
-
-                <h1>
-                    Building digital
-                    <span class="gradient">experiences.</span>
-                </h1>
-
-                <p class="hero-description">
-                    Saya seorang developer yang berfokus pada pembuatan
-                    website, game, dan berbagai pengalaman digital yang
-                    modern, interaktif, dan mudah digunakan.
-                </p>
-
-                <div class="buttons">
-                    <a href="#projects" class="btn btn-primary">
-                        Lihat Project →
-                    </a>
-
-                    <a href="#contact" class="btn btn-secondary">
-                        Hubungi Saya
-                    </a>
-                </div>
-
+              </div>
+              <div class="legend" id="donutLegend"></div>
             </div>
+          </div>
+        </div>
 
-        </section>
+        <div class="panel table-panel">
+          <h3 style="padding:18px 20px 0">🕐 Aktivitas Terbaru</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Waktu</th><th>Aksi</th><th>Key</th><th>Detail</th></tr></thead>
+              <tbody id="recentBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
 
-        <!-- About -->
-        <section id="about">
+      <!-- ===== PAGE: KEYS ===== -->
+      <section id="page-keys" class="hidden">
+        <div class="toolbar">
+          <input type="text" id="searchInput" placeholder="🔍 Cari key / HWID…" />
+          <select id="filterSelect">
+            <option value="all">Semua</option>
+            <option value="active">Aktif</option>
+            <option value="expired">Kedaluwarsa</option>
+            <option value="banned">Banned</option>
+          </select>
+          <button class="btn btn-primary" id="btnGoGen">＋ Generate</button>
+        </div>
+        <div class="panel table-panel">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Key</th><th>Status</th><th>Kedaluwarsa</th><th>HWID</th><th>Dibuat</th><th>Aksi</th></tr></thead>
+              <tbody id="keysBody"></tbody>
+            </table>
+          </div>
+          <div class="pagination">
+            <button class="btn btn-ghost btn-xs" id="btnPrev">← Sebelumnya</button>
+            <span id="pageInfo">–</span>
+            <button class="btn btn-ghost btn-xs" id="btnNext">Berikutnya →</button>
+          </div>
+        </div>
+      </section>
 
-            <div class="section-label">
-                About Me
+      <!-- ===== PAGE: GENERATE ===== -->
+      <section id="page-generate" class="hidden">
+        <div class="panel">
+          <h3>⚙️ Generate Key Baru</h3>
+          <div class="gen-grid">
+            <div>
+              <label class="field-label">Jumlah</label>
+              <input type="number" id="genAmount" value="1" min="1" max="100" />
+              <div class="quick-amounts">
+                <button type="button" data-amount="1">1</button>
+                <button type="button" data-amount="5">5</button>
+                <button type="button" data-amount="10">10</button>
+                <button type="button" data-amount="25">25</button>
+                <button type="button" data-amount="50">50</button>
+              </div>
             </div>
-
-            <h2 class="section-title">
-                Developer yang suka membuat sesuatu.
-            </h2>
-
-            <p class="section-description">
-                Saya menikmati proses mengubah ide menjadi produk digital
-                yang dapat digunakan dan dinikmati oleh orang lain.
-            </p>
-
-            <div class="about-grid">
-
-                <div class="card">
-                    <h3>Siapa Saya?</h3>
-
-                    <p>
-                        Saya adalah developer independen yang mengembangkan
-                        berbagai project digital, mulai dari website,
-                        game, sistem backend, hingga berbagai tools
-                        custom sesuai kebutuhan project.
-                    </p>
-                </div>
-
-                <div class="card">
-
-                    <h3>Tech Stack</h3>
-
-                    <div class="skills">
-                        <span class="skill">HTML</span>
-                        <span class="skill">CSS</span>
-                        <span class="skill">JavaScript</span>
-                        <span class="skill">Lua / Luau</span>
-                        <span class="skill">Roblox Studio</span>
-                        <span class="skill">Cloudflare</span>
-                        <span class="skill">Git</span>
-                    </div>
-
-                </div>
-
+            <div>
+              <label class="field-label">Durasi</label>
+              <select id="genDuration">
+                <option value="1">1 jam (testing)</option>
+                <option value="24">1 hari</option>
+                <option value="72">3 hari</option>
+                <option value="168" selected>7 hari</option>
+                <option value="720">30 hari</option>
+                <option value="2160">90 hari</option>
+                <option value="lifetime">Lifetime</option>
+              </select>
             </div>
-
-        </section>
-
-        <!-- Projects -->
-        <section id="projects">
-
-            <div class="section-label">
-                Projects
+            <div>
+              <label class="field-label">Catatan (opsional)</label>
+              <input type="text" id="genNote" placeholder="contoh: untuk buyer A" maxlength="120" />
             </div>
-
-            <h2 class="section-title">
-                Beberapa karya saya.
-            </h2>
-
-            <p class="section-description">
-                Berikut beberapa kategori project yang pernah saya
-                kerjakan dan kembangkan.
-            </p>
-
-            <div class="projects">
-
-                <div class="card project">
-
-                    <div>
-                        <div class="project-icon">🎮</div>
-
-                        <h3>Game Development</h3>
-
-                        <p>
-                            Mengembangkan game dan sistem interaktif
-                            menggunakan Roblox Studio dan Luau.
-                        </p>
-                    </div>
-
-                    <a href="#" class="project-link">
-                        Explore Project →
-                    </a>
-
-                </div>
-
-                <div class="card project">
-
-                    <div>
-                        <div class="project-icon">🌐</div>
-
-                        <h3>Web Development</h3>
-
-                        <p>
-                            Website modern, landing page, portfolio,
-                            dan berbagai kebutuhan web custom.
-                        </p>
-                    </div>
-
-                    <a href="#" class="project-link">
-                        Explore Project →
-                    </a>
-
-                </div>
-
-                <div class="card project">
-
-                    <div>
-                        <div class="project-icon">⚡</div>
-
-                        <h3>Custom Systems</h3>
-
-                        <p>
-                            Sistem dan tools custom untuk mengotomatisasi
-                            pekerjaan dan meningkatkan workflow project.
-                        </p>
-                    </div>
-
-                    <a href="#" class="project-link">
-                        Explore Project →
-                    </a>
-
-                </div>
-
+            <div class="gen-btn-wrap">
+              <button class="btn btn-primary btn-block" id="btnGenerate">✨ Generate</button>
             </div>
+          </div>
+        </div>
 
-        </section>
-
-        <!-- Contact -->
-        <section id="contact">
-
-            <div class="contact-box">
-
-                <h2>
-                    Punya sebuah ide?
-                </h2>
-
-                <p>
-                    Mari buat sesuatu yang menarik bersama.
-                    Untuk project, kolaborasi, atau sekadar berdiskusi,
-                    jangan ragu untuk menghubungi saya.
-                </p>
-
-                <div class="buttons" style="justify-content:center;">
-
-                    <a
-                        href="mailto:your@email.com"
-                        class="btn btn-primary"
-                    >
-                        Contact Me
-                    </a>
-
-                </div>
-
+        <div class="panel hidden" id="genResultPanel">
+          <div class="gen-result-head">
+            <h3>✅ <span id="genCount">0</span> key berhasil dibuat</h3>
+            <div class="gen-result-actions">
+              <button class="btn btn-ghost btn-xs" id="btnCopyAll">Copy semua</button>
+              <button class="btn btn-ghost btn-xs" id="btnDownload">⬇ Download .txt</button>
             </div>
+          </div>
+          <div class="key-grid" id="genKeys"></div>
+        </div>
+      </section>
 
-        </section>
+      <!-- ===== PAGE: LOGS ===== -->
+      <section id="page-logs" class="hidden">
+        <div class="panel table-panel">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Waktu</th><th>Aksi</th><th>Key</th><th>IP</th><th>HWID / Detail</th></tr></thead>
+              <tbody id="logsBody"></tbody>
+            </table>
+          </div>
+          <div class="pagination">
+            <button class="btn btn-ghost btn-xs" id="btnLogPrev">← Sebelumnya</button>
+            <span id="logPageInfo">–</span>
+            <button class="btn btn-ghost btn-xs" id="btnLogNext">Berikutnya →</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== PAGE: API ===== -->
+      <section id="page-api" class="hidden">
+        <div class="panel">
+          <h3>🔌 Endpoint Validasi</h3>
+          <div class="baseurl">
+            <span class="mono" id="apiBase">…</span>
+            <button class="btn btn-ghost btn-xs" data-copy-target="#apiBase">Copy</button>
+          </div>
+          <div class="endpoint">
+            <span class="method">POST</span><span class="path">/api/validate</span>
+            <span class="cell-dim">— validasi key + bind HWID otomatis di pemakaian pertama</span>
+          </div>
+          <div class="grid-2">
+            <div>
+              <div class="code-head">Request</div>
+              <pre class="code" id="codeReq">POST /api/validate
+Content-Type: application/json
+
+{
+  "key": "K7M3-XQ9A-B2NF-RTP8",
+  "hwid": "RBX-8f3a12c9e5"
+}</pre>
+            </div>
+            <div>
+              <div class="code-head">Response sukses</div>
+              <pre class="code" id="codeRes">{
+  "success": true,
+  "code": "VALID",
+  "expires_at": 1735689600000,
+  "status": "active",
+  "timestamp": 1730000000000,
+  "signature": "9f2ac8…"
+}</pre>
+            </div>
+          </div>
+          <table class="mt">
+            <thead><tr><th>Kode Error</th><th>Arti</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">KEY_INVALID</td><td>Key tidak ditemukan</td></tr>
+              <tr><td class="mono">KEY_BANNED</td><td>Key telah dibanned</td></tr>
+              <tr><td class="mono">KEY_EXPIRED</td><td>Key telah kedaluwarsa</td></tr>
+              <tr><td class="mono">HWID_MISMATCH</td><td>Key terkunci ke HWID lain</td></tr>
+              <tr><td class="mono">RATE_LIMITED</td><td>Terlalu banyak permintaan (60/menit/IP)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="panel">
+          <div class="code-flex-head">
+            <h3>📝 Contoh Integrasi Lua (Roblox)</h3>
+            <button class="btn btn-ghost btn-xs" data-copy-target="#codeLua">Copy</button>
+          </div>
+          <pre class="code" id="codeLua">local HttpService = game:GetService("HttpService")
+local API_URL = "https://domainanda.com/api/validate"
+
+local function validate(key, hwid)
+    local ok, res = pcall(function()
+        return HttpService:PostAsync(API_URL,
+            HttpService:JSONEncode({ key = key, hwid = hwid }),
+            Enum.HttpContentType.ApplicationJson)
+    end)
+    if not ok then return nil, "koneksi gagal" end
+    local data = HttpService:JSONDecode(res)
+    if data.success then return data end
+    return nil, data.message
+end
+
+local data, err = validate("XXXX-XXXX-XXXX-XXXX", "RBX-8f3a12c9e5")
+if not data then
+    warn("[KeySystem] " .. tostring(err))
+    return
+end
+print("Lisensi valid s/d:",
+    data.expires_at and os.date("%Y-%m-%d %H:%M", data.expires_at / 1000) or "Lifetime")</pre>
+        </div>
+      </section>
 
     </main>
+  </div>
+</div>
 
-    <!-- Footer -->
-    <footer>
-
-        <div>
-            © 2026 AdvanceStudio. All rights reserved.
-        </div>
-
-        <div class="socials">
-            <a href="#" target="_blank">GitHub</a>
-            <a href="#" target="_blank">Discord</a>
-            <a href="#" target="_blank">Roblox</a>
-        </div>
-
-    </footer>
-
+<div id="toast" class="toast hidden"></div>
+<script src="js/app.js"></script>
 </body>
 </html>
