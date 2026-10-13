@@ -1,29 +1,224 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KeyLicense — Dashboard</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KeyLicense — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg:#070b14; --surface:#0d1526; --surface-2:#111b31; --border:#1d2a45;
+  --primary:#3b82f6; --primary-2:#2563eb; --soft:rgba(59,130,246,.14);
+  --text:#e7ecf6; --muted:#8b98b5; --ok:#34d399; --warn:#fbbf24; --bad:#f87171;
+  --mono:'JetBrains Mono',ui-monospace,monospace; --radius:14px;
+}
+html { color-scheme:dark; }
+body {
+  font-family:'Inter',system-ui,sans-serif; background:var(--bg);
+  background-image:radial-gradient(ellipse 90% 55% at 50% -15%, rgba(37,99,235,.14), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 110% 110%, rgba(37,99,235,.06), transparent 70%);
+  background-attachment:fixed; color:var(--text); min-height:100vh; -webkit-font-smoothing:antialiased;
+}
+::-webkit-scrollbar { width:10px; height:10px; }
+::-webkit-scrollbar-thumb { background:#1d2a45; border-radius:6px; }
+.hidden { display:none !important; }
+.mt { margin-top:16px; }
+
+input, select {
+  width:100%; background:#0a1120; border:1px solid var(--border); border-radius:10px;
+  padding:11px 14px; color:var(--text); font:inherit; font-size:14px; outline:none;
+  transition:border-color .15s, box-shadow .15s;
+}
+input:focus, select:focus { border-color:var(--primary); box-shadow:0 0 0 3px var(--soft); }
+input::placeholder { color:#55627c; }
+
+.btn {
+  font:inherit; font-size:14px; font-weight:600; border:1px solid transparent;
+  border-radius:10px; padding:11px 18px; cursor:pointer;
+  transition:filter .15s, border-color .15s, color .15s, background .15s, transform .05s;
+}
+.btn:active { transform:translateY(1px); }
+.btn:disabled { opacity:.55; cursor:not-allowed; }
+.btn-primary { background:linear-gradient(180deg,var(--primary),var(--primary-2)); color:#fff; box-shadow:0 4px 14px rgba(37,99,235,.35); }
+.btn-primary:hover { filter:brightness(1.12); }
+.btn-ghost { background:transparent; border-color:var(--border); color:var(--muted); }
+.btn-ghost:hover { color:var(--text); border-color:var(--primary); }
+.btn-danger { background:transparent; border-color:rgba(248,113,113,.35); color:var(--bad); }
+.btn-danger:hover { background:rgba(248,113,113,.1); }
+.btn-xs { padding:5px 10px; font-size:12px; border-radius:8px; }
+.btn-block { width:100%; }
+
+.field-label { display:block; font-size:11px; font-weight:600; color:var(--muted); margin:12px 0 6px; text-transform:uppercase; letter-spacing:.5px; }
+.error-text { color:var(--bad); font-size:13px; margin-top:12px; text-align:center; }
+
+.badge { display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:700; padding:4px 10px; border-radius:999px; text-transform:uppercase; letter-spacing:.4px; white-space:nowrap; }
+.badge-active { color:var(--ok); background:rgba(52,211,153,.10); border:1px solid rgba(52,211,153,.30); }
+.badge-expired { color:var(--muted); background:rgba(138,151,176,.10); border:1px solid rgba(138,151,176,.30); }
+.badge-banned { color:var(--bad); background:rgba(248,113,113,.10); border:1px solid rgba(248,113,113,.30); }
+.badge-lifetime { color:#93c5fd; background:var(--soft); border:1px solid rgba(59,130,246,.35); }
+
+.login-screen { min-height:100vh; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; padding:24px; }
+.login-glow { position:absolute; border-radius:50%; filter:blur(90px); }
+.g1 { width:420px; height:420px; background:rgba(37,99,235,.35); top:-120px; left:-100px; }
+.g2 { width:360px; height:360px; background:rgba(59,130,246,.20); bottom:-120px; right:-80px; }
+.login-card {
+  position:relative; width:100%; max-width:400px; background:rgba(13,21,38,.92);
+  border:1px solid var(--border); border-radius:20px; padding:42px 34px;
+  backdrop-filter:blur(8px); box-shadow:0 30px 70px rgba(0,0,0,.5);
+}
+.logo-lg { font-size:24px; font-weight:800; color:#fff; }
+.logo-lg span, .side-logo span { color:var(--primary); }
+.subtitle { color:var(--muted); font-size:13px; margin:8px 0 24px; }
+.login-divider { display:flex; align-items:center; gap:12px; margin:18px 0; color:var(--muted); font-size:12px; }
+.login-divider::before, .login-divider::after { content:''; flex:1; height:1px; background:var(--border); }
+
+.app { display:flex; min-height:100vh; }
+.sidebar {
+  width:250px; flex-shrink:0; z-index:60;
+  background:linear-gradient(180deg,#0c1322,#0a0f1c); border-right:1px solid var(--border);
+  display:flex; flex-direction:column; position:sticky; top:0; height:100vh; padding:22px 16px;
+}
+.side-logo { font-size:20px; font-weight:800; color:#fff; padding:0 10px 22px; }
+.side-nav { flex:1; }
+.nav-item {
+  display:flex; align-items:center; gap:12px; width:100%; background:none; border:none;
+  color:var(--muted); font:inherit; font-weight:600; font-size:14px; padding:11px 12px;
+  border-radius:10px; cursor:pointer; margin-bottom:4px; text-align:left; transition:.15s;
+}
+.nav-item svg { width:18px; height:18px; flex-shrink:0; }
+.nav-item:hover { color:var(--text); background:rgba(255,255,255,.03); }
+.nav-item.active { color:#fff; background:linear-gradient(90deg, rgba(59,130,246,.22), rgba(59,130,246,.05)); box-shadow:inset 0 0 0 1px rgba(59,130,246,.35); }
+.side-footer { border-top:1px solid var(--border); padding-top:14px; }
+.admin-chip { display:flex; align-items:center; gap:10px; margin-bottom:12px; padding:0 4px; }
+.avatar { width:36px; height:36px; border-radius:10px; flex-shrink:0; background:linear-gradient(135deg,var(--primary),var(--primary-2)); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:15px; color:#fff; }
+.admin-name { font-size:13px; font-weight:700; }
+.admin-role { font-size:11px; color:var(--muted); }
+.side-backdrop { display:none; }
+
+.main { flex:1; min-width:0; display:flex; flex-direction:column; }
+.topbar {
+  position:sticky; top:0; z-index:30; display:flex; align-items:center; gap:14px;
+  padding:15px 28px; background:rgba(7,11,20,.82); backdrop-filter:blur(10px); border-bottom:1px solid var(--border);
+}
+.page-title { font-size:18px; font-weight:700; }
+.topbar-right { margin-left:auto; }
+.hamburger { display:none; background:none; border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:16px; width:36px; height:36px; cursor:pointer; }
+.content { padding:26px 28px 70px; width:100%; max-width:1280px; margin:0 auto; }
+
+.stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(185px,1fr)); gap:14px; margin-bottom:18px; }
+.stat-card { display:flex; align-items:center; gap:14px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px; position:relative; overflow:hidden; }
+.stat-card::before { content:''; position:absolute; inset:0 0 auto 0; height:2px; background:linear-gradient(90deg,transparent,var(--primary),transparent); opacity:.6; }
+.stat-icon { width:44px; height:44px; border-radius:12px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+.stat-icon svg { width:20px; height:20px; }
+.si-blue { background:var(--soft); color:#60a5fa; }
+.si-green { background:rgba(52,211,153,.12); color:var(--ok); }
+.si-warn { background:rgba(251,191,36,.12); color:var(--warn); }
+.si-red { background:rgba(248,113,113,.12); color:var(--bad); }
+.stat-value { font-size:24px; font-weight:800; line-height:1.1; }
+.stat-value.ok { color:var(--ok); } .stat-value.warn { color:var(--warn); } .stat-value.bad { color:var(--bad); }
+.stat-label { font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; margin-top:3px; }
+
+.grid-2 { display:grid; grid-template-columns:1.4fr 1fr; gap:14px; margin-bottom:18px; }
+.panel { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:22px; margin-bottom:18px; }
+.panel h3 { font-size:15px; margin-bottom:16px; }
+.grid-2 .panel { margin-bottom:0; }
+
+.chart { display:flex; align-items:flex-end; gap:12px; height:215px; padding-top:8px; }
+.chart-col { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:6px; height:100%; }
+.chart-val { font-size:11px; font-weight:700; color:var(--muted); }
+.chart-bar { width:100%; max-width:38px; border-radius:6px 6px 3px 3px; background:linear-gradient(180deg,#60a5fa,var(--primary-2)); box-shadow:0 0 16px rgba(59,130,246,.25); transition:height .4s ease; }
+.chart-day { font-size:11px; color:var(--muted); font-weight:600; }
+
+.donut-wrap { display:flex; align-items:center; gap:26px; padding:6px 4px; }
+.donut { width:150px; height:150px; border-radius:50%; position:relative; flex-shrink:0; background:var(--surface-2); }
+.donut-hole { position:absolute; inset:22px; border-radius:50%; background:var(--surface); display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.donut-total { font-size:26px; font-weight:800; }
+.donut-label { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; font-weight:600; }
+.legend { display:flex; flex-direction:column; gap:10px; font-size:13px; flex:1; }
+.legend-row { display:flex; align-items:center; gap:8px; color:var(--muted); font-weight:500; }
+.dot { width:10px; height:10px; border-radius:3px; flex-shrink:0; }
+.lr-count { margin-left:auto; font-weight:700; color:var(--text); }
+
+.toolbar { display:flex; gap:12px; margin-bottom:14px; }
+.toolbar input { flex:1; }
+.toolbar select { width:180px; }
+
+.table-panel { padding:0; overflow:hidden; }
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; font-size:13px; min-width:760px; }
+th { text-align:left; font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; padding:12px 16px; border-bottom:1px solid var(--border); background:rgba(255,255,255,.02); }
+td { padding:12px 16px; border-bottom:1px solid var(--border); vertical-align:middle; }
+tbody tr:last-child td { border-bottom:none; }
+tbody tr:hover { background:rgba(59,130,246,.04); }
+.mono { font-family:var(--mono); font-size:12.5px; color:#93c5fd; }
+.mono.kcopy { cursor:pointer; }
+.mono.kcopy:hover { text-decoration:underline; }
+.cell-dim { color:var(--muted); font-size:12px; }
+.note { color:var(--muted); font-size:11px; margin-top:3px; }
+.actions { display:flex; gap:6px; flex-wrap:wrap; }
+.empty { text-align:center; padding:34px; color:var(--muted); }
+.pagination { display:flex; align-items:center; justify-content:flex-end; gap:14px; padding:12px 16px; color:var(--muted); font-size:13px; }
+
+.gen-grid { display:grid; grid-template-columns:1fr 1fr 1.4fr auto; gap:16px; align-items:start; }
+.gen-btn-wrap { align-self:end; }
+.gen-btn-wrap .btn { height:43px; }
+.quick-amounts { display:flex; gap:6px; margin-top:8px; }
+.quick-amounts button { flex:1; background:#0a1120; border:1px solid var(--border); color:var(--muted); border-radius:8px; padding:6px 0; font:inherit; font-size:12px; font-weight:600; cursor:pointer; transition:.15s; }
+.quick-amounts button:hover { border-color:var(--primary); color:var(--text); }
+.gen-result-head { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+.gen-result-head h3 { margin-bottom:0; }
+.gen-result-actions { display:flex; gap:8px; }
+.key-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:10px; margin-top:18px; }
+.key-chip { display:flex; align-items:center; justify-content:space-between; gap:10px; background:#0a1120; border:1px solid var(--border); border-radius:10px; padding:10px 12px; }
+
+.baseurl { display:flex; align-items:center; justify-content:space-between; gap:10px; background:#0a1120; border:1px solid var(--border); border-radius:10px; padding:10px 14px; margin-bottom:16px; }
+.endpoint { display:flex; align-items:center; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+.method { font-family:var(--mono); font-size:11px; font-weight:700; background:var(--soft); color:#60a5fa; border:1px solid rgba(59,130,246,.4); border-radius:6px; padding:4px 8px; }
+.path { font-family:var(--mono); font-size:13px; }
+.code-head { font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px; }
+.code { background:#0a1120; border:1px solid var(--border); border-radius:10px; padding:14px 16px; font-family:var(--mono); font-size:12.5px; line-height:1.6; color:#c7d6f5; overflow-x:auto; white-space:pre; }
+.code-flex-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
+.code-flex-head h3 { margin-bottom:12px; }
+
+.toast { position:fixed; bottom:24px; right:24px; z-index:100; background:var(--surface-2); border:1px solid var(--border); border-left:3px solid var(--primary); color:var(--text); padding:13px 18px; border-radius:10px; font-size:14px; box-shadow:0 10px 30px rgba(0,0,0,.5); animation:slideIn .2s ease; }
+.toast.err { border-left-color:var(--bad); }
+@keyframes slideIn { from { transform:translateY(8px); opacity:0; } to { transform:none; opacity:1; } }
+
+@media (max-width:1024px) {
+  .sidebar { position:fixed; left:0; top:0; transform:translateX(-100%); transition:transform .25s; }
+  .sidebar.open { transform:none; }
+  .side-backdrop { display:block; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:50; opacity:0; pointer-events:none; transition:.2s; }
+  .side-backdrop.show { opacity:1; pointer-events:auto; }
+  .hamburger { display:block; }
+  .grid-2 { grid-template-columns:1fr; }
+}
+@media (max-width:720px) {
+  .content { padding:18px 14px 60px; }
+  .gen-grid { grid-template-columns:1fr 1fr; }
+  .gen-btn-wrap { grid-column:1/-1; }
+  .toolbar { flex-direction:column; }
+  .toolbar select { width:100%; }
+  .donut-wrap { flex-direction:column; }
+}
+</style>
 </head>
 <body>
 
-<!-- ================= LOGIN ================= -->
+<!-- LOGIN -->
 <div id="loginScreen" class="login-screen">
-  <div class="login-glow g1"></div>
-  <div class="login-glow g2"></div>
+  <div class="login-glow g1"></div><div class="login-glow g2"></div>
   <div class="login-card">
     <div class="logo-lg">🔐 Key<span>License</span></div>
     <p class="subtitle">Masuk ke panel manajemen lisensi</p>
     <form id="loginForm" autocomplete="off">
       <label class="field-label">Username</label>
-      <input type="text" id="username" placeholder="admin" required />
+      <input type="text" id="username" placeholder="admin" />
       <label class="field-label">Password</label>
-      <input type="password" id="password" placeholder="••••••••" required />
-      <button type="submit" class="btn btn-primary btn-block" id="loginBtn">Masuk</button>
+      <input type="password" id="password" placeholder="••••••••" />
+      <button type="submit" class="btn btn-primary btn-block" id="loginBtn" style="margin-top:20px">Masuk</button>
       <p id="loginError" class="error-text hidden"></p>
     </form>
     <div class="login-divider"><span>atau</span></div>
@@ -31,33 +226,16 @@
   </div>
 </div>
 
-<!-- ================= APP ================= -->
+<!-- APP -->
 <div id="app" class="app hidden">
-
-  <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <div class="side-logo">Key<span>License</span></div>
     <nav class="side-nav">
-      <button class="nav-item active" data-page="dashboard">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
-        Dashboard
-      </button>
-      <button class="nav-item" data-page="keys">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3-3.5 3.5z"/></svg>
-        Key Lisensi
-      </button>
-      <button class="nav-item" data-page="generate">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        Generate Key
-      </button>
-      <button class="nav-item" data-page="logs">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-        Log Aktivitas
-      </button>
-      <button class="nav-item" data-page="api">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-        API &amp; Integrasi
-      </button>
+      <button class="nav-item active" data-page="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Dashboard</button>
+      <button class="nav-item" data-page="keys"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3-3.5 3.5z"/></svg>Key Lisensi</button>
+      <button class="nav-item" data-page="generate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Generate Key</button>
+      <button class="nav-item" data-page="logs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Log Aktivitas</button>
+      <button class="nav-item" data-page="api"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>API &amp; Integrasi</button>
     </nav>
     <div class="side-footer">
       <div class="admin-chip">
@@ -69,57 +247,29 @@
   </aside>
   <div class="side-backdrop" id="sideBackdrop"></div>
 
-  <!-- Main -->
   <div class="main">
     <header class="topbar">
       <button class="hamburger" id="btnSidebar">☰</button>
       <h1 class="page-title" id="pageTitle">Dashboard</h1>
-      <div class="topbar-right">
-        <span class="badge badge-active" id="serverStatus">● …</span>
-      </div>
+      <div class="topbar-right"><span class="badge badge-active" id="serverStatus">● …</span></div>
     </header>
 
     <main class="content">
-
-      <!-- ===== PAGE: DASHBOARD ===== -->
+      <!-- DASHBOARD -->
       <section id="page-dashboard">
         <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-icon si-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3-3.5 3.5z"/></svg></div>
-            <div><div class="stat-value" id="stTotal">–</div><div class="stat-label">Total Key</div></div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon si-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-            <div><div class="stat-value ok" id="stActive">–</div><div class="stat-label">Aktif</div></div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon si-warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-            <div><div class="stat-value warn" id="stExpired">–</div><div class="stat-label">Kedaluwarsa</div></div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon si-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
-            <div><div class="stat-value bad" id="stBanned">–</div><div class="stat-label">Banned</div></div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon si-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-            <div><div class="stat-value" id="stChecks">–</div><div class="stat-label">Validasi 24 Jam</div></div>
-          </div>
+          <div class="stat-card"><div class="stat-icon si-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3-3.5 3.5z"/></svg></div><div><div class="stat-value" id="stTotal">–</div><div class="stat-label">Total Key</div></div></div>
+          <div class="stat-card"><div class="stat-icon si-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div><div class="stat-value ok" id="stActive">–</div><div class="stat-label">Aktif</div></div></div>
+          <div class="stat-card"><div class="stat-icon si-warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div><div class="stat-value warn" id="stExpired">–</div><div class="stat-label">Kedaluwarsa</div></div></div>
+          <div class="stat-card"><div class="stat-icon si-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div><div><div class="stat-value bad" id="stBanned">–</div><div class="stat-label">Banned</div></div></div>
+          <div class="stat-card"><div class="stat-icon si-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div><div class="stat-value" id="stChecks">–</div><div class="stat-label">Validasi 24 Jam</div></div></div>
         </div>
 
         <div class="grid-2">
-          <div class="panel">
-            <h3>📈 Validasi 7 Hari Terakhir</h3>
-            <div class="chart" id="chart"></div>
-          </div>
-          <div class="panel">
-            <h3>🎯 Distribusi Key</h3>
+          <div class="panel"><h3>📈 Validasi 7 Hari Terakhir</h3><div class="chart" id="chart"></div></div>
+          <div class="panel"><h3>🎯 Distribusi Key</h3>
             <div class="donut-wrap">
-              <div class="donut" id="donut">
-                <div class="donut-hole">
-                  <div class="donut-total" id="donutTotal">0</div>
-                  <div class="donut-label">Total Key</div>
-                </div>
-              </div>
+              <div class="donut" id="donut"><div class="donut-hole"><div class="donut-total" id="donutTotal">0</div><div class="donut-label">Total Key</div></div></div>
               <div class="legend" id="donutLegend"></div>
             </div>
           </div>
@@ -127,162 +277,89 @@
 
         <div class="panel table-panel">
           <h3 style="padding:18px 20px 0">🕐 Aktivitas Terbaru</h3>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Waktu</th><th>Aksi</th><th>Key</th><th>Detail</th></tr></thead>
-              <tbody id="recentBody"></tbody>
-            </table>
-          </div>
+          <div class="table-wrap"><table><thead><tr><th>Waktu</th><th>Aksi</th><th>Key</th><th>Detail</th></tr></thead><tbody id="recentBody"></tbody></table></div>
         </div>
       </section>
 
-      <!-- ===== PAGE: KEYS ===== -->
+      <!-- KEYS -->
       <section id="page-keys" class="hidden">
         <div class="toolbar">
           <input type="text" id="searchInput" placeholder="🔍 Cari key / HWID…" />
-          <select id="filterSelect">
-            <option value="all">Semua</option>
-            <option value="active">Aktif</option>
-            <option value="expired">Kedaluwarsa</option>
-            <option value="banned">Banned</option>
-          </select>
+          <select id="filterSelect"><option value="all">Semua</option><option value="active">Aktif</option><option value="expired">Kedaluwarsa</option><option value="banned">Banned</option></select>
           <button class="btn btn-primary" id="btnGoGen">＋ Generate</button>
         </div>
         <div class="panel table-panel">
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Key</th><th>Status</th><th>Kedaluwarsa</th><th>HWID</th><th>Dibuat</th><th>Aksi</th></tr></thead>
-              <tbody id="keysBody"></tbody>
-            </table>
-          </div>
-          <div class="pagination">
-            <button class="btn btn-ghost btn-xs" id="btnPrev">← Sebelumnya</button>
-            <span id="pageInfo">–</span>
-            <button class="btn btn-ghost btn-xs" id="btnNext">Berikutnya →</button>
-          </div>
+          <div class="table-wrap"><table><thead><tr><th>Key</th><th>Status</th><th>Kedaluwarsa</th><th>HWID</th><th>Dibuat</th><th>Aksi</th></tr></thead><tbody id="keysBody"></tbody></table></div>
+          <div class="pagination"><button class="btn btn-ghost btn-xs" id="btnPrev">← Sebelumnya</button><span id="pageInfo">–</span><button class="btn btn-ghost btn-xs" id="btnNext">Berikutnya →</button></div>
         </div>
       </section>
 
-      <!-- ===== PAGE: GENERATE ===== -->
+      <!-- GENERATE -->
       <section id="page-generate" class="hidden">
         <div class="panel">
           <h3>⚙️ Generate Key Baru</h3>
           <div class="gen-grid">
-            <div>
-              <label class="field-label">Jumlah</label>
-              <input type="number" id="genAmount" value="1" min="1" max="100" />
-              <div class="quick-amounts">
-                <button type="button" data-amount="1">1</button>
-                <button type="button" data-amount="5">5</button>
-                <button type="button" data-amount="10">10</button>
-                <button type="button" data-amount="25">25</button>
-                <button type="button" data-amount="50">50</button>
-              </div>
-            </div>
-            <div>
-              <label class="field-label">Durasi</label>
-              <select id="genDuration">
-                <option value="1">1 jam (testing)</option>
-                <option value="24">1 hari</option>
-                <option value="72">3 hari</option>
-                <option value="168" selected>7 hari</option>
-                <option value="720">30 hari</option>
-                <option value="2160">90 hari</option>
-                <option value="lifetime">Lifetime</option>
-              </select>
-            </div>
-            <div>
-              <label class="field-label">Catatan (opsional)</label>
-              <input type="text" id="genNote" placeholder="contoh: untuk buyer A" maxlength="120" />
-            </div>
-            <div class="gen-btn-wrap">
-              <button class="btn btn-primary btn-block" id="btnGenerate">✨ Generate</button>
-            </div>
+            <div><label class="field-label">Jumlah</label><input type="number" id="genAmount" value="1" min="1" max="100" />
+              <div class="quick-amounts"><button type="button" data-amount="1">1</button><button type="button" data-amount="5">5</button><button type="button" data-amount="10">10</button><button type="button" data-amount="25">25</button><button type="button" data-amount="50">50</button></div></div>
+            <div><label class="field-label">Durasi</label>
+              <select id="genDuration"><option value="1">1 jam (testing)</option><option value="24">1 hari</option><option value="72">3 hari</option><option value="168" selected>7 hari</option><option value="720">30 hari</option><option value="2160">90 hari</option><option value="lifetime">Lifetime</option></select></div>
+            <div><label class="field-label">Catatan (opsional)</label><input type="text" id="genNote" placeholder="contoh: untuk buyer A" maxlength="120" /></div>
+            <div class="gen-btn-wrap"><button class="btn btn-primary btn-block" id="btnGenerate">✨ Generate</button></div>
           </div>
         </div>
-
         <div class="panel hidden" id="genResultPanel">
           <div class="gen-result-head">
             <h3>✅ <span id="genCount">0</span> key berhasil dibuat</h3>
-            <div class="gen-result-actions">
-              <button class="btn btn-ghost btn-xs" id="btnCopyAll">Copy semua</button>
-              <button class="btn btn-ghost btn-xs" id="btnDownload">⬇ Download .txt</button>
-            </div>
+            <div class="gen-result-actions"><button class="btn btn-ghost btn-xs" id="btnCopyAll">Copy semua</button><button class="btn btn-ghost btn-xs" id="btnDownload">⬇ Download .txt</button></div>
           </div>
           <div class="key-grid" id="genKeys"></div>
         </div>
       </section>
 
-      <!-- ===== PAGE: LOGS ===== -->
+      <!-- LOGS -->
       <section id="page-logs" class="hidden">
         <div class="panel table-panel">
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Waktu</th><th>Aksi</th><th>Key</th><th>IP</th><th>HWID / Detail</th></tr></thead>
-              <tbody id="logsBody"></tbody>
-            </table>
-          </div>
-          <div class="pagination">
-            <button class="btn btn-ghost btn-xs" id="btnLogPrev">← Sebelumnya</button>
-            <span id="logPageInfo">–</span>
-            <button class="btn btn-ghost btn-xs" id="btnLogNext">Berikutnya →</button>
-          </div>
+          <div class="table-wrap"><table><thead><tr><th>Waktu</th><th>Aksi</th><th>Key</th><th>IP</th><th>HWID / Detail</th></tr></thead><tbody id="logsBody"></tbody></table></div>
+          <div class="pagination"><button class="btn btn-ghost btn-xs" id="btnLogPrev">← Sebelumnya</button><span id="logPageInfo">–</span><button class="btn btn-ghost btn-xs" id="btnLogNext">Berikutnya →</button></div>
         </div>
       </section>
 
-      <!-- ===== PAGE: API ===== -->
+      <!-- API -->
       <section id="page-api" class="hidden">
         <div class="panel">
           <h3>🔌 Endpoint Validasi</h3>
-          <div class="baseurl">
-            <span class="mono" id="apiBase">…</span>
-            <button class="btn btn-ghost btn-xs" data-copy-target="#apiBase">Copy</button>
-          </div>
-          <div class="endpoint">
-            <span class="method">POST</span><span class="path">/api/validate</span>
-            <span class="cell-dim">— validasi key + bind HWID otomatis di pemakaian pertama</span>
-          </div>
+          <div class="baseurl"><span class="mono" id="apiBase">…</span><button class="btn btn-ghost btn-xs" data-copy-target="#apiBase">Copy</button></div>
+          <div class="endpoint"><span class="method">POST</span><span class="path">/api/validate</span><span class="cell-dim">— validasi key + bind HWID otomatis</span></div>
           <div class="grid-2">
-            <div>
-              <div class="code-head">Request</div>
-              <pre class="code" id="codeReq">POST /api/validate
+            <div><div class="code-head">Request</div>
+<pre class="code">POST /api/validate
 Content-Type: application/json
 
 {
   "key": "K7M3-XQ9A-B2NF-RTP8",
   "hwid": "RBX-8f3a12c9e5"
-}</pre>
-            </div>
-            <div>
-              <div class="code-head">Response sukses</div>
-              <pre class="code" id="codeRes">{
+}</pre></div>
+            <div><div class="code-head">Response sukses</div>
+<pre class="code">{
   "success": true,
   "code": "VALID",
   "expires_at": 1735689600000,
   "status": "active",
   "timestamp": 1730000000000,
   "signature": "9f2ac8…"
-}</pre>
-            </div>
+}</pre></div>
           </div>
-          <table class="mt">
-            <thead><tr><th>Kode Error</th><th>Arti</th></tr></thead>
-            <tbody>
-              <tr><td class="mono">KEY_INVALID</td><td>Key tidak ditemukan</td></tr>
-              <tr><td class="mono">KEY_BANNED</td><td>Key telah dibanned</td></tr>
-              <tr><td class="mono">KEY_EXPIRED</td><td>Key telah kedaluwarsa</td></tr>
-              <tr><td class="mono">HWID_MISMATCH</td><td>Key terkunci ke HWID lain</td></tr>
-              <tr><td class="mono">RATE_LIMITED</td><td>Terlalu banyak permintaan (60/menit/IP)</td></tr>
-            </tbody>
-          </table>
+          <table class="mt"><thead><tr><th>Kode Error</th><th>Arti</th></tr></thead><tbody>
+            <tr><td class="mono">KEY_INVALID</td><td>Key tidak ditemukan</td></tr>
+            <tr><td class="mono">KEY_BANNED</td><td>Key telah dibanned</td></tr>
+            <tr><td class="mono">KEY_EXPIRED</td><td>Key telah kedaluwarsa</td></tr>
+            <tr><td class="mono">HWID_MISMATCH</td><td>Key terkunci ke HWID lain</td></tr>
+            <tr><td class="mono">RATE_LIMITED</td><td>Terlalu banyak permintaan</td></tr>
+          </tbody></table>
         </div>
-
         <div class="panel">
-          <div class="code-flex-head">
-            <h3>📝 Contoh Integrasi Lua (Roblox)</h3>
-            <button class="btn btn-ghost btn-xs" data-copy-target="#codeLua">Copy</button>
-          </div>
-          <pre class="code" id="codeLua">local HttpService = game:GetService("HttpService")
+          <div class="code-flex-head"><h3>📝 Contoh Integrasi Lua (Roblox)</h3><button class="btn btn-ghost btn-xs" data-copy-target="#codeLua">Copy</button></div>
+<pre class="code" id="codeLua">local HttpService = game:GetService("HttpService")
 local API_URL = "https://domainanda.com/api/validate"
 
 local function validate(key, hwid)
@@ -302,16 +379,360 @@ if not data then
     warn("[KeySystem] " .. tostring(err))
     return
 end
-print("Lisensi valid s/d:",
-    data.expires_at and os.date("%Y-%m-%d %H:%M", data.expires_at / 1000) or "Lifetime")</pre>
+print("Lisensi valid")</pre>
         </div>
       </section>
-
     </main>
   </div>
 </div>
 
 <div id="toast" class="toast hidden"></div>
-<script src="js/app.js"></script>
+
+<script>
+'use strict';
+const $ = (id) => document.getElementById(id);
+const H = 36e5;
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtFull = new Intl.DateTimeFormat('id-ID', {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+const fmtShort = new Intl.DateTimeFormat('id-ID', {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+const fmtDate = (ts) => ts ? fmtFull.format(new Date(ts)) : '—';
+
+function toast(msg, type='ok') {
+  const el = $('toast'); el.textContent = msg;
+  el.className = 'toast' + (type === 'err' ? ' err' : '');
+  clearTimeout(el._t); el._t = setTimeout(() => el.classList.add('hidden'), 2600);
+}
+function stateOfRow(r) { return r.status === 'banned' ? 'banned' : (r.expires_at && r.expires_at <= Date.now() ? 'expired' : 'active'); }
+function badge(state) {
+  const map = {active:['badge-active','Aktif'], expired:['badge-expired','Kedaluwarsa'], banned:['badge-banned','Banned']};
+  const [cls, label] = map[state] || map.expired;
+  return '<span class="badge ' + cls + '">' + label + '</span>';
+}
+function actionBadge(a) {
+  const map = {validate:'badge-active', generate:'badge-lifetime', unban:'badge-active', 'validate-fail':'badge-banned', ban:'badge-banned', 'reset-hwid':'badge-lifetime', delete:'badge-expired'};
+  return '<span class="badge ' + (map[a] || 'badge-expired') + '">' + esc(a) + '</span>';
+}
+function fmtExpiry(exp) {
+  if (!exp) return '<span class="badge badge-lifetime">Lifetime</span>';
+  const ms = exp - Date.now();
+  if (ms <= 0) return '<span class="badge badge-expired">Kedaluwarsa</span>';
+  const d = Math.floor(ms/864e5), h = Math.floor(ms%864e5/36e5), m = Math.floor(ms%36e5/6e4);
+  const left = d > 0 ? d+'h '+h+'j' : (h > 0 ? h+'j '+m+'m' : m+'m');
+  return fmtDate(exp) + '<div class="cell-dim">' + left + ' lagi</div>';
+}
+
+let token = localStorage.getItem('kl_token') || '';
+let demo = false, current = 'dashboard', lastGenerated = [];
+const keyQ = {page:1, pages:1, filter:'all', search:''};
+const logQ = {page:1, pages:1};
+
+async function req(path, opts={}) {
+  if (demo) return demoRoute(path, opts);
+  const res = await fetch(path, {
+    method: opts.method || 'GET',
+    headers: {'Content-Type':'application/json', Authorization:'Bearer ' + token},
+    body: opts.body ? JSON.stringify(opts.body) : undefined
+  });
+  if (res.status === 401 && !path.includes('/auth/login')) { doLogout(); throw new Error('Sesi berakhir'); }
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.message || 'Permintaan gagal');
+  return data;
+}
+
+/* ===== DEMO ===== */
+const KB = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+function genKey() {
+  return Array.from({length:4}, () => Array.from({length:4}, () => KB[Math.floor(Math.random()*KB.length)]).join('')).join('-');
+}
+let demoKeys = [], demoLogs = [];
+function seedDemo() {
+  const now = Date.now();
+  const mk = (i, o) => ({ id:i+1, key:o.key, status:o.status||'active', hwid:o.hwid||null,
+    duration_hours:o.dur ?? null, expires_at:o.dur ? now + o.dur*H : null,
+    created_at: now - (i+1)*7*H, activated_at:o.hwid ? now-(i+1)*5*H : null, last_check:null, note:o.note||null });
+  demoKeys = [
+    mk(0,{key:'K7M3-XQ9A-B2NF-RTP8',dur:168,hwid:'RBX-8f3a12c9e5',note:'buyer A — paket mingguan'}),
+    mk(1,{key:'P4W8-N2K7-D5QB-XZ31',dur:720,hwid:'RBX-cc9011ab77',note:'buyer B — paket bulanan'}),
+    mk(2,{key:'T9RD-H3XL-V7MP-J42W',dur:720,hwid:'RBX-aa1122ff90',status:'banned',note:'key sharing'}),
+    mk(3,{key:'M2QB-Z8NT-C4KR-Y91L',dur:1,note:'testing'}),
+    mk(4,{key:'X7KP-Q3MV-B9WD-N56T',dur:24,hwid:'RBX-77de01ca33'}),
+    mk(5,{key:'R5NC-W9XJ-L2QP-H83K',dur:null,note:'lifetime — reseller'}),
+    mk(6,{key:'B3VT-Y7DK-N5RM-Q12X',dur:72,hwid:'RBX-5e77aa21bc'}),
+    mk(7,{key:'L8WD-P2QX-K4NB-T67Z',dur:2160,hwid:'RBX-99ff10de54',note:'buyer C — 90 hari'}),
+    mk(8,{key:'Q6XR-M4TB-V9KP-D23N',dur:24,hwid:'RBX-31bc77aa02'}),
+    mk(9,{key:'Z4KP-R8NX-J2QD-W75M',dur:168,note:'giveaway'}),
+    mk(10,{key:'V9ND-K3QP-X7WB-M21R',dur:720,hwid:'RBX-60aa12ff45'}),
+    mk(11,{key:'G2WB-T7KM-P4XR-N93Q',dur:null,note:'owner'})
+  ];
+  demoKeys[3].expires_at = now - 2*H;
+  demoKeys[8].expires_at = now - 30*H;
+  demoLogs = [];
+  const acts = ['validate','validate','validate-fail','generate','validate','reset-hwid','validate','ban','validate','validate','unban','delete'];
+  acts.forEach((a,i) => demoLogs.push({ id:i+1, key:demoKeys[i%demoKeys.length].key, action:a,
+    ip:'103.'+(10+i)+'.24.'+(5+i*7), hwid:a.startsWith('validate')?'RBX-8f3a12c9e5':null,
+    detail:a==='generate'?'1 key | durasi: 168 jam':(a==='delete'?'dihapus oleh admin':null), created_at:now-i*2.5*H }));
+}
+function demoLog(action, key, extra={}) {
+  demoLogs.unshift({id:Date.now(), key, action, ip:'103.10.24.7', hwid:extra.hwid||null, detail:extra.detail||null, created_at:Date.now()});
+}
+function demoRoute(path, opts={}) {
+  const respond = (data) => new Promise((r) => setTimeout(() => r(data), 150));
+  let m;
+  if (path === '/api/admin/stats') {
+    const t = Date.now(), c = (f) => demoKeys.filter(f).length;
+    return respond({success:true, stats:{
+      total:demoKeys.length,
+      active:c(k => k.status==='active' && (!k.expires_at || k.expires_at>t)),
+      expired:c(k => k.status==='active' && k.expires_at && k.expires_at<=t),
+      banned:c(k => k.status==='banned'),
+      checks24h:demoLogs.filter(l => l.action==='validate' && l.created_at>t-24*H).length }});
+  }
+  if (path === '/api/admin/stats/chart') {
+    const out = [], vals = [14,22,9,31,18,27,12];
+    for (let i=6;i>=0;i--) { const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()-i); out.push({date:d.toISOString().slice(0,10), count:vals[6-i]}); }
+    return respond({success:true, chart:out});
+  }
+  if (path === '/api/admin/keys' && (opts.method||'GET')==='POST') {
+    const amount = Math.min(parseInt(opts.body?.amount)||1, 100);
+    const dur = opts.body?.duration==='lifetime' ? null : parseInt(opts.body?.duration)||null;
+    const note = (opts.body?.note||'').slice(0,120)||null;
+    const keys = [];
+    for (let i=0;i<amount;i++) { const k = genKey();
+      demoKeys.unshift({id:Date.now()+i, key:k, status:'active', hwid:null, duration_hours:dur, expires_at:dur?Date.now()+dur*H:null, created_at:Date.now(), activated_at:null, last_check:null, note});
+      keys.push(k); }
+    demoLog('generate', keys[0], {detail:keys.length+' key | durasi: '+(dur??'lifetime')+' jam'});
+    return respond({success:true, keys});
+  }
+  if (path.startsWith('/api/admin/keys')) {
+    if ((m = path.match(/^\/api\/admin\/keys\/([^/]+)\/(ban|unban|reset-hwid)$/))) {
+      const key = decodeURIComponent(m[1]).toUpperCase(), row = demoKeys.find(k => k.key===key);
+      if (row) { if (m[2]==='ban') row.status='banned'; else if (m[2]==='unban') row.status='active'; else { row.hwid=null; row.activated_at=null; } demoLog(m[2], key); }
+      return respond({success:true});
+    }
+    if ((m = path.match(/^\/api\/admin\/keys\/([^/]+)$/)) && opts.method==='DELETE') {
+      const key = decodeURIComponent(m[1]).toUpperCase();
+      demoKeys = demoKeys.filter(k => k.key!==key);
+      demoLog('delete', key);
+      return respond({success:true});
+    }
+    const u = new URLSearchParams(path.split('?')[1]||'');
+    const search = (u.get('search')||'').toLowerCase(), filter = u.get('filter')||'all';
+    const limit = Math.min(parseInt(u.get('limit'))||25, 100), page = Math.max(parseInt(u.get('page'))||1, 1);
+    const rows = demoKeys.filter(k => {
+      if (search && !(k.key.toLowerCase().includes(search) || (k.hwid||'').toLowerCase().includes(search))) return false;
+      if (filter!=='all' && stateOfRow(k)!==filter) return false;
+      return true;
+    }).sort((a,b) => b.id-a.id).map(k => ({...k, state:stateOfRow(k)}));
+    const total = rows.length, pages = Math.max(Math.ceil(total/limit),1), p = Math.min(page,pages);
+    return respond({success:true, keys:rows.slice((p-1)*limit, p*limit), page:p, pages, total});
+  }
+  if (path.startsWith('/api/admin/logs')) {
+    const u = new URLSearchParams(path.split('?')[1]||'');
+    const limit = Math.min(parseInt(u.get('limit'))||30, 100), page = Math.max(parseInt(u.get('page'))||1, 1);
+    const total = demoLogs.length, pages = Math.max(Math.ceil(total/limit),1), p = Math.min(page,pages);
+    return respond({success:true, logs:demoLogs.slice((p-1)*limit, p*limit), page:p, pages, total});
+  }
+  return respond({success:false, message:'Demo endpoint tidak ditemukan'});
+}
+
+/* ===== AUTH ===== */
+ $('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  $('loginError').classList.add('hidden');
+  $('loginBtn').disabled = true;
+  try {
+    const d = await req('/api/auth/login', {method:'POST', body:{username:$('username').value, password:$('password').value}});
+    token = d.token; localStorage.setItem('kl_token', token);
+    $('adminName').textContent = $('username').value;
+    $('adminAvatar').textContent = ($('username').value[0]||'A').toUpperCase();
+    enterApp();
+  } catch (err) { $('loginError').textContent = err.message; $('loginError').classList.remove('hidden'); }
+  finally { $('loginBtn').disabled = false; }
+});
+ $('btnDemo').addEventListener('click', () => {
+  demo = true; seedDemo();
+  $('adminName').textContent = 'demo-admin';
+  $('adminAvatar').textContent = 'D';
+  enterApp();
+});
+function doLogout() {
+  token=''; demo=false; localStorage.removeItem('kl_token');
+  $('app').classList.add('hidden'); $('loginScreen').classList.remove('hidden');
+}
+ $('btnLogout').addEventListener('click', doLogout);
+function enterApp() {
+  $('loginScreen').classList.add('hidden');
+  $('app').classList.remove('hidden');
+  updateStatus(); go('dashboard');
+}
+async function updateStatus() {
+  const el = $('serverStatus');
+  if (demo) { el.textContent='● Mode Demo'; el.className='badge badge-lifetime'; return; }
+  try { const r = await fetch('/health'); if (r.ok) { el.textContent='● Server Online'; el.className='badge badge-active'; return; } throw new Error(); }
+  catch { el.textContent='● Server Offline'; el.className='badge badge-banned'; }
+}
+
+/* ===== ROUTER ===== */
+const PAGES = {dashboard:'Dashboard', keys:'Key Lisensi', generate:'Generate Key', logs:'Log Aktivitas', api:'API & Integrasi'};
+function go(page) {
+  current = page;
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.page===page));
+  document.querySelectorAll('.content > section').forEach(s => s.classList.toggle('hidden', s.id !== 'page-'+page));
+  $('pageTitle').textContent = PAGES[page];
+  closeSidebarMobile();
+  if (page==='dashboard') loadDashboard();
+  if (page==='keys') loadKeys();
+  if (page==='logs') loadLogs();
+  if (page==='api') fillApiPage();
+}
+document.querySelectorAll('.nav-item').forEach(b => b.addEventListener('click', () => go(b.dataset.page)));
+ $('btnSidebar').addEventListener('click', () => { $('sidebar').classList.toggle('open'); $('sideBackdrop').classList.toggle('show'); });
+ $('sideBackdrop').addEventListener('click', closeSidebarMobile);
+function closeSidebarMobile() { $('sidebar').classList.remove('open'); $('sideBackdrop').classList.remove('show'); }
+
+/* ===== DASHBOARD ===== */
+async function loadDashboard() {
+  try {
+    const d = await req('/api/admin/stats');
+    $('stTotal').textContent=d.stats.total; $('stActive').textContent=d.stats.active;
+    $('stExpired').textContent=d.stats.expired; $('stBanned').textContent=d.stats.banned;
+    $('stChecks').textContent=d.stats.checks24h;
+    renderDonut(d.stats);
+  } catch {}
+  try { const c = await req('/api/admin/stats/chart'); renderChart(c.chart); }
+  catch { $('chart').innerHTML = '<div class="cell-dim" style="margin:auto;text-align:center;padding:20px">Grafik: tambahkan endpoint /api/admin/stats/chart di backend.</div>'; }
+  try {
+    const l = await req('/api/admin/logs?limit=6');
+    $('recentBody').innerHTML = l.logs.map(row =>
+      '<tr><td class="cell-dim">'+fmtShort.format(new Date(row.created_at))+'</td><td>'+actionBadge(row.action)+'</td><td class="mono">'+esc((row.key||'—').slice(0,19))+'</td><td class="cell-dim">'+esc(row.hwid||row.detail||row.ip||'—')+'</td></tr>'
+    ).join('') || '<tr><td colspan="4" class="empty">Belum ada aktivitas</td></tr>';
+  } catch {}
+}
+function renderChart(chart) {
+  const max = Math.max(...chart.map(c => c.count), 1);
+  $('chart').innerHTML = chart.map(c => {
+    const label = new Date(c.date+'T00:00:00').toLocaleDateString('id-ID',{weekday:'short'});
+    const hpx = Math.max(Math.round(c.count/max*140), 6);
+    return '<div class="chart-col"><div class="chart-val">'+c.count+'</div><div class="chart-bar" style="height:'+hpx+'px" title="'+c.date+': '+c.count+' validasi"></div><div class="chart-day">'+label+'</div></div>';
+  }).join('');
+}
+function renderDonut(s) {
+  const total = s.active + s.expired + s.banned;
+  $('donutTotal').textContent = total;
+  const donut = $('donut');
+  if (!total) donut.style.background = 'var(--surface-2)';
+  else {
+    const pa = (s.active/total)*100, pe = (s.expired/total)*100;
+    donut.style.background = 'conic-gradient(var(--ok) 0 '+pa+'%, var(--warn) '+pa+'% '+(pa+pe)+'%, var(--bad) '+(pa+pe)+'% 100%)';
+  }
+  const rows = [['var(--ok)','Aktif',s.active],['var(--warn)','Kedaluwarsa',s.expired],['var(--bad)','Banned',s.banned]];
+  $('donutLegend').innerHTML = rows.map(r => '<div class="legend-row"><span class="dot" style="background:'+r[0]+'"></span>'+r[1]+'<span class="lr-count">'+r[2]+'</span></div>').join('');
+}
+
+/* ===== KEYS ===== */
+async function loadKeys() {
+  try {
+    const q = new URLSearchParams({page:keyQ.page, filter:keyQ.filter, search:keyQ.search});
+    const d = await req('/api/admin/keys?'+q);
+    keyQ.page=d.page; keyQ.pages=d.pages;
+    $('pageInfo').textContent = 'Hal '+d.page+'/'+d.pages+' • '+d.total+' key';
+    $('keysBody').innerHTML = d.keys.map(k =>
+      '<tr><td><span class="mono kcopy" data-copy="'+esc(k.key)+'" title="Klik untuk copy">'+esc(k.key)+'</span>'+(k.note?'<div class="note">'+esc(k.note)+'</div>':'')+'</td>'
+      +'<td>'+badge(k.state)+'</td><td>'+fmtExpiry(k.expires_at)+'</td>'
+      +'<td class="cell-dim">'+(k.hwid ? esc(k.hwid.length>20 ? k.hwid.slice(0,20)+'…' : k.hwid) : '—')+'</td>'
+      +'<td class="cell-dim">'+fmtDate(k.created_at)+'</td>'
+      +'<td><div class="actions">'
+      +(k.state==='banned' ? '<button class="btn btn-ghost btn-xs" data-action="unban" data-key="'+esc(k.key)+'">Unban</button>' : '<button class="btn btn-ghost btn-xs" data-action="ban" data-key="'+esc(k.key)+'">Ban</button>')
+      +'<button class="btn btn-ghost btn-xs" data-action="reset" data-key="'+esc(k.key)+'"'+(k.hwid?'':' disabled')+'>Reset HWID</button>'
+      +'<button class="btn btn-danger btn-xs" data-action="delete" data-key="'+esc(k.key)+'">Hapus</button>'
+      +'</div></td></tr>'
+    ).join('') || '<tr><td colspan="6" class="empty">Tidak ada key</td></tr>';
+  } catch {}
+}
+ $('keysBody').addEventListener('click', async (e) => {
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+  const {action, key} = el.dataset;
+  if (action==='delete' && !confirm('Hapus permanen key '+key+'?')) return;
+  if (action==='reset' && !confirm('Reset HWID untuk '+key+'?')) return;
+  try {
+    const post = {ban:'ban', unban:'unban', reset:'reset-hwid'}[action];
+    if (post) await req('/api/admin/keys/'+encodeURIComponent(key)+'/'+post, {method:'POST'});
+    else await req('/api/admin/keys/'+encodeURIComponent(key), {method:'DELETE'});
+    toast('Berhasil: '+action);
+    loadKeys();
+    if (current==='dashboard') loadDashboard();
+  } catch (err) { toast(err.message, 'err'); }
+});
+let searchTimer;
+ $('searchInput').addEventListener('input', (e) => { clearTimeout(searchTimer); searchTimer = setTimeout(() => { keyQ.search = e.target.value.trim(); keyQ.page=1; loadKeys(); }, 300); });
+ $('filterSelect').addEventListener('change', (e) => { keyQ.filter = e.target.value; keyQ.page=1; loadKeys(); });
+ $('btnPrev').addEventListener('click', () => { if (keyQ.page>1) { keyQ.page--; loadKeys(); } });
+ $('btnNext').addEventListener('click', () => { if (keyQ.page<keyQ.pages) { keyQ.page++; loadKeys(); } });
+ $('btnGoGen').addEventListener('click', () => go('generate'));
+
+/* ===== GENERATE ===== */
+document.querySelectorAll('[data-amount]').forEach(b => b.addEventListener('click', () => { $('genAmount').value = b.dataset.amount; }));
+ $('btnGenerate').addEventListener('click', async () => {
+  $('btnGenerate').disabled = true;
+  try {
+    const d = await req('/api/admin/keys', {method:'POST', body:{amount:$('genAmount').value, duration:$('genDuration').value, note:$('genNote').value}});
+    lastGenerated = d.keys;
+    $('genCount').textContent = d.keys.length;
+    $('genKeys').innerHTML = d.keys.map(k => '<div class="key-chip"><span class="mono">'+esc(k)+'</span><button class="btn btn-ghost btn-xs" data-copy="'+esc(k)+'">Copy</button></div>').join('');
+    $('genResultPanel').classList.remove('hidden');
+    toast(d.keys.length+' key berhasil dibuat');
+  } catch (err) { toast(err.message, 'err'); }
+  finally { $('btnGenerate').disabled = false; }
+});
+ $('btnCopyAll').addEventListener('click', async () => {
+  if (!lastGenerated.length) return;
+  try { await navigator.clipboard.writeText(lastGenerated.join('\n')); toast('Semua key disalin'); } catch {}
+});
+ $('btnDownload').addEventListener('click', () => {
+  if (!lastGenerated.length) return;
+  const blob = new Blob([lastGenerated.join('\n')], {type:'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'keys-'+Date.now()+'.txt';
+  a.click(); URL.revokeObjectURL(a.href);
+});
+
+/* ===== LOGS ===== */
+async function loadLogs() {
+  try {
+    const d = await req('/api/admin/logs?limit=30&page='+logQ.page);
+    logQ.page=d.page; logQ.pages=d.pages;
+    $('logPageInfo').textContent = 'Hal '+d.page+'/'+d.pages+' • '+d.total+' log';
+    $('logsBody').innerHTML = d.logs.map(l =>
+      '<tr><td class="cell-dim">'+fmtShort.format(new Date(l.created_at))+'</td><td>'+actionBadge(l.action)+'</td><td class="mono">'+esc((l.key||'—').slice(0,19))+'</td><td class="cell-dim">'+esc(l.ip||'—')+'</td><td class="cell-dim">'+esc(l.hwid||l.detail||'—')+'</td></tr>'
+    ).join('') || '<tr><td colspan="5" class="empty">Belum ada log</td></tr>';
+  } catch {}
+}
+ $('btnLogPrev').addEventListener('click', () => { if (logQ.page>1) { logQ.page--; loadLogs(); } });
+ $('btnLogNext').addEventListener('click', () => { if (logQ.page<logQ.pages) { logQ.page++; loadLogs(); } });
+
+/* ===== API PAGE ===== */
+function fillApiPage() {
+  const base = location.protocol.startsWith('http') ? location.origin : 'https://app-anda.up.railway.app';
+  $('apiBase').textContent = base + '/api/validate';
+}
+
+/* ===== COPY GLOBAL ===== */
+document.addEventListener('click', async (e) => {
+  const el = e.target.closest('[data-copy]');
+  if (el) { try { await navigator.clipboard.writeText(el.dataset.copy); toast('Disalin ke clipboard'); } catch {} return; }
+  const ct = e.target.closest('[data-copy-target]');
+  if (ct) { try { await navigator.clipboard.writeText($(ct.dataset.copyTarget.slice(1)).textContent); toast('Disalin ke clipboard'); } catch {} }
+});
+
+/* ===== INIT ===== */
+if (token) { $('adminName').textContent = 'admin'; enterApp(); }
+setInterval(() => {
+  if ($('app').classList.contains('hidden')) return;
+  if (current==='dashboard') loadDashboard();
+  if (!demo) updateStatus();
+}, 60000);
+</script>
 </body>
 </html>
